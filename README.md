@@ -1,14 +1,16 @@
-# Welcome to your CDK TypeScript project
+# sanitized-rds 
+Use a state machine that does the following:
+- gets the latest snapshot of a specified RDS cluster
+- creates a temp cluster from it
+- runs the sanitizer script 
+- shares it with whichever accounts
+- deletes temporary database and snapshot
 
-This is a blank project for CDK development with TypeScript.
+Then the dev account has another step machine that will:
+- grab the latest sanitized prod snapshot
+- create a new dev cluster 
+- modify DNS Records to point to new rds cluster
+- delete old dev cluster
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-## Useful commands
-
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+Both of these state machines will be ran at night periodically via Event timers.
+There will also exist a Lambda that can trigger this entire workflow.
